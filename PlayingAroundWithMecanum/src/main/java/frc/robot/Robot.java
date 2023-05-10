@@ -4,11 +4,15 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenixpro.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /** This is a demo program showing how to use Mecanum control with the MecanumDrive class. */
 public class Robot extends TimedRobot {
@@ -17,17 +21,21 @@ public class Robot extends TimedRobot {
   private static final int kFrontRightID = 3;
   private static final int kRearRightID = 4;
 
-  private static final int kJoystickChannel = 0;
+  private static final int kJoystickChannelLeft = 0;
+
+  private final SendableChooser<Command> sendableChooser = new SendableChooser<>();
 
   private MecanumDrive m_robotDrive;
-  private Joystick m_stick;
+  private XboxController leftJoystick;
 
   @Override
   public void robotInit() {
-    TalonFX frontLeft = new TalonFX(kFrontLeftID, "rio");
-    TalonFX rearLeft = new TalonFX(kRearLeftID, "rio");
-    TalonFX frontRight = new TalonFX(kFrontRightID, "rio");
-    TalonFX rearRight = new TalonFX(kRearRightID, "rio");
+    MyTalonSRX frontLeft = new MyTalonSRX(kFrontLeftID);
+    MyTalonSRX rearLeft = new MyTalonSRX(kRearLeftID);
+    MyTalonSRX frontRight = new MyTalonSRX(kFrontRightID);
+    MyTalonSRX rearRight = new MyTalonSRX(kRearRightID);
+
+    
 
     // Invert the right side motors.
     // You may need to change or remove this to match your robot.
@@ -36,13 +44,15 @@ public class Robot extends TimedRobot {
 
     m_robotDrive = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
 
-    m_stick = new Joystick(kJoystickChannel);
+    leftJoystick = new XboxController(kJoystickChannelLeft);
+
+    sendableChooser.setDefaultOption(null, null);
   }
 
   @Override
   public void teleopPeriodic() {
     // Use the joystick X axis for forward movement, Y axis for lateral
     // movement, and Z axis for rotation.
-    m_robotDrive.driveCartesian(-m_stick.getY(), -m_stick.getX(), -m_stick.getZ());
+    m_robotDrive.driveCartesian(-leftJoystick.getLeftY(), -leftJoystick.getLeftX(), -leftJoystick.getRightX());
   }
 }
