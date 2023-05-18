@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -16,6 +17,11 @@ public class MyTalonSRX extends TalonSRX implements MotorController{
     public void set(double speed) {
         lastSpeed = speed;
         super.set(getControlMode(), speed);
+    }
+
+    
+    public void runToPoesition(double position){
+        set(TalonSRXControlMode.Position, position);
     }
 
     @Override
